@@ -1,0 +1,45 @@
+//
+// Variables
+// --------------------------------------------------
+
+//== Color
+$main-color-01:         #000000;
+$main-color-02:         #ffffff;
+
+$color-01:              #808000;// SOL ouderen (groen)
+$color-02:              #da70d6;// SOL jeugd (paars)
+$color-03:              #6495ed;// SOL over (blauw)
+$color-04:              #daa520;// SOL innovatie (geel)
+
+$transition-default: all .3s;
+
+//== Typography
+
+$font-family:           'Source Sans Pro', sans-serif;
+
+$font-size-sm:          18px;   /* p */
+$font-size-md:          24px;   /* p.intro */
+$font-size-lg:          20px;   /* h2 */
+$font-size-xl:          32px;   /* h1 */
+
+$line-height-sm:        24px;   /* p */
+$line-height-md:        30px;   /* p.quote */
+$line-height-lg:        24px;   /* h2 */
+$line-height-xl:        32px;   /* h1 */
+
+// Extra small screen / phone
+$screen-xs:                  480px !default;
+
+// Small screen / tablet
+$screen-sm:                  768px !default;
+
+// Medium screen / desktop
+$screen-md:                  992px !default;
+
+// Large screen / wide desktop
+$screen-lg:                  1200px !default;
+
+// So media queries don't overlap when required, provide a maximum
+$screen-xs-max:              max-width ($screen-sm - 1) !default;
+$screen-sm-max:              max-width ($screen-md - 1) !default;
+$screen-md-max:              max-width ($screen-lg - 1) !default;

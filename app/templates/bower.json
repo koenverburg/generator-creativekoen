@@ -1,0 +1,29 @@
+{
+  "name": "clientname",
+  "version": "0.0.0",
+  "authors": [
+    "creativekoen <creativekoen@gmail.com>"
+  ],
+  "description": "frontend components",
+  "keywords": [
+    "breakpoint"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "~2.1.4",
+    "modernizr": "~2.8.3",
+    "normalize.css": "~3.0.3"
+  },
+  "main": [
+    "dist/jquery.min.js",
+    "modernizr.js",
+    "normalize.css"
+  ]
+}

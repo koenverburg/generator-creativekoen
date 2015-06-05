@@ -1,0 +1,41 @@
+.container {
+
+    margin: 0 15px;
+    
+    .home & {
+        margin: 0;
+
+        @include breakpoint($screen-sm) {
+            margin: 0 auto;
+        }
+    }
+
+    @include breakpoint($screen-sm) {
+        margin: 0 auto;
+        width: $screen-sm;
+    }
+
+    @include breakpoint($screen-md) {
+        width: $screen-md;
+    }
+
+    @include breakpoint($screen-lg) {
+        width: $screen-lg;
+    }
+
+}
+
+.wrapper {
+    @include breakpoint($screen-sm) {
+        margin-left: -10px;
+        margin-right: -10px;
+    }
+}
+
+.l-table {
+    display: table;
+}
+
+.l-table__cell {
+    display: table-cell;
+}

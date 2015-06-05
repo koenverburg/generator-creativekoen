@@ -1,0 +1,71 @@
+/* 2, 3, 4, 5, 6, and 12 column grids (wider screens) */
+/* Proportional units
+   ========================================================================== */
+/*
+ * Specify the proportional width of an object.
+ * Primarily for, but not limited to, use with `.grid__cell` components.
+ * Intentional redundancy build into each set of unit classes.
+ */
+@include breakpoint($screen-md) {
+
+    .unit-1-2--md, .unit-2-4--md, .unit-3-6--md, .unit-6-12--md {
+      width: 50%;
+    }
+
+    .unit-1-3--md, .unit-2-6--md, .unit-4-12--md {
+      width: 33.333%;
+    }
+
+    .unit-2-3--md, .unit-4-6--md, .unit-8-12--md {
+      width: 66.667%;
+    }
+
+    .unit-1-4--md, .unit-3-12--md {
+      width: 25%;
+    }
+
+    .unit-3-4--md, .unit-9-12--md {
+      width: 75%;
+    }
+
+    .unit-1-5--md {
+      width: 20%;
+    }
+
+    .unit-2-5--md {
+      width: 40%;
+    }
+
+    .unit-3-5--md {
+      width: 60%;
+    }
+
+    .unit-4-5--md {
+      width: 80%;
+    }
+
+    .unit-1-6--md, .unit-2-12--md {
+      width: 16.667%;
+    }
+
+    .unit-5-6--md, .unit-10-12--md {
+      width: 83.333%;
+    }
+
+    .unit-1-12--md {
+      width: 8.333%;
+    }
+
+    .unit-5-12--md {
+      width: 41.667%;
+    }
+
+    .unit-7-12--md {
+      width: 58.333%;
+    }
+
+    .unit-11-12--md {
+      width: 91.667%;
+    }
+
+}

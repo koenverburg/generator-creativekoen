@@ -1,0 +1,35 @@
+{
+  "name": "<%= clientname %>",
+  "version": "1.0.1",
+  "description": "a gulpfile",
+  "main": "gulpfile.js",
+  "scripts": {
+    "start": "gulp"
+  },
+  "dependencies": {
+    "gulp-autoprefixer": "*",
+    "gulp-concat": "*",
+    "gulp-header": "*",
+    "gulp-jshint": "*",
+    "gulp-minify-css": "*",
+    "gulp-notify": "*",
+    "gulp-plumber": "*",
+    "gulp-rename": "*",
+    "gulp-sass": "*",
+    "gulp-uglify": "*",
+    "gulp-util": "*",
+    "jshint-stylish": "*"
+  },
+  "author": "mousecraft",
+  "license": "ISC",
+  "devDependencies": {
+    "browser-sync": "*",
+    "gulp": "git://github.com/gulpjs/gulp.git#4.0",
+    "gulp-cached": "*",
+    "gulp-rimraf": "*",
+    "gulp-connect-php": "*",
+    "gulp-load-plugins": "*",
+    "gulp-memory-cache": "*",
+    "wiredep": "*"
+  }
+}
