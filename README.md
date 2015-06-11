@@ -1,4 +1,4 @@
-# generator-myflow [![Build Status](https://secure.travis-ci.org/CreativeKoen/generator-workflow-gen.png?branch=master)](https://travis-ci.org/CreativeKoen/generator-workflow-gen)
+# generator-myflow [![Build Status](https://secure.travis-ci.org/CreativeKoen/generator-myflow.png?branch=master)](https://travis-ci.org/CreativeKoen/generator-myflow)
 
 > [Yeoman](http://yeoman.io) generator
 
@@ -16,7 +16,7 @@ Basically, he wears a top hat, lives in your computer, and waits for you to tell
 Not every new computer comes with a Yeoman pre-installed. He lives in the [npm](https://npmjs.org) package repository. You only have to ask for him once, then he packs up and moves into your hard drive. *Make sure you clean up, he likes new and shiny things.*
 
 ```bash
-npm install -g yo
+npm install -g yo gulpjs/gulp-cli#4.0 bower (grunt)
 ```
 
 ### Yeoman Generators
@@ -26,7 +26,7 @@ Yeoman travels light. He didn't pack any generators when he moved in. You can th
 To install generator-myflow from npm, run:
 
 ```bash
-npm install -g generator-MCframework
+npm install -g generator-myflow
 ```
 To install generator-myflow from a local copy, run:
 
