@@ -33,8 +33,8 @@ myflow.prototype.askForClient = function askForClient() {
             name: 'appName',
             message: 'what is the name of your client name ?',
             default: 'best-project-ever'
-    }], function(props){
-        this.appname = props.appName;
+    }], function(answers){
+        this.appname = answers.appName;
         done();
     }.bind(this));
 };
@@ -145,6 +145,91 @@ myflow.prototype.askForLost = function askForLost() {
         this.includePhp = answers.includePhp;
         this.includePhpJade = answers.includePhpJade;
 
+        done();
+    }.bind(this));
+};
+
+myflow.prototype.askForDeploy = function askForDeploy() {
+    var done = this.async();
+    var prompts = [{
+      type: 'checkbox',
+      name: 'features',
+      message: 'Are you planning on deploying this project?',
+      choices: [{
+        name: 'github',
+        value: 'includeGH',
+        checked: false
+      },{
+        name: 'ftp',
+        value: 'includeFTP',
+        checked: false
+      }]
+    },
+    //ask for sass deps
+    {
+        when: function (answers) {
+        return answers && answers.features &&
+          answers.features.indexOf('includeGH') !== -1;
+        },
+        name: 'github username',
+        value: 'githubName',
+        message: 'What is your github username?',
+        default: 'CreativeKoen'
+    },
+    // {
+    //     when: function (answers) {
+    //     return answers && answers.features &&
+    //       answers.features.indexOf('includeGH') !== -1;
+    //     },
+    //     name: 'github repo',
+    //     value: 'githubName',
+    //     message: 'What is your github usrname?',
+    //     default: 'CreativeKoen'
+    // },
+    //ask for stylus deps
+    {
+        when: function (answers) {
+        return answers && answers.features &&
+          answers.features.indexOf('includeFTP') !== -1;
+        },
+        name: 'ftpInfo',
+        value: 'ftp_username',
+        message: 'What is your ftp username?',
+        default: 'username'
+    },
+    {
+        when: function (answers) {
+        return answers && answers.features &&
+          answers.features.indexOf('includeFTP') !== -1;
+        },
+        name: 'ftpInfo',
+        value: 'ftp_password',
+        message: 'What is your ftp password?',
+        default: 'password'
+    },
+    {
+        when: function (answers) {
+        return answers && answers.features &&
+          answers.features.indexOf('includeFTP') !== -1;
+        },
+        name: 'ftpInfo',
+        value: 'ftp_path',
+        message: 'What is your ftp path?',
+        default: 'path/to/www/'
+    }
+    ];
+
+    this.prompt(prompts, function (answers) {
+        var features = answers.features;
+        function hasFeature(feat) {
+            return features && features.indexOf(feat) !== -1;
+        }
+
+        this.includeSass = hasFeature('includeSass');
+        this.includeStylus = hasFeature('includeStylus');
+
+        this.includeStylusStack = hasFeature('includeStylusStack');
+        this.includeSassStack = hasFeature('includeSassStack');
         done();
     }.bind(this));
 };
