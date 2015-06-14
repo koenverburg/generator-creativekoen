@@ -28,7 +28,7 @@ To install generator-creativekoen from npm, run:
 ```bash
 npm install -g generator-creativekoen
 ```
-To install generator-myflow from a local copy, run:
+To install generator-creativekoen from a local copy, run:
 
 ```bash
 npm link
