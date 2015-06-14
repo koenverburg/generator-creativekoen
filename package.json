@@ -1,10 +1,10 @@
 {
-  "name": "generator-myflow",
+  "name": "generator-creativekoen",
   "version": "0.0.0",
   "description": "Yeoman generator",
   "license": "MIT",
   "main": "app/index.js",
-  "repository": "CreativeKoen/generator-myflow",
+  "repository": "CreativeKoen/generator-creativekoen",
   "author": {
     "name": "Koen Verburg",
     "email": "",

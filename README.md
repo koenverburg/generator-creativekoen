@@ -1,4 +1,4 @@
-# generator-myflow [![Build Status](https://secure.travis-ci.org/CreativeKoen/generator-myflow.png?branch=master)](https://travis-ci.org/CreativeKoen/generator-myflow)
+# generator-creativekoen [![Build Status](https://secure.travis-ci.org/CreativeKoen/generator-creativekoen.png?branch=master)](https://travis-ci.org/CreativeKoen/generator-creativekoen)
 
 > [Yeoman](http://yeoman.io) generator
 
@@ -23,10 +23,10 @@ npm install -g yo gulpjs/gulp-cli#4.0 bower (grunt)
 
 Yeoman travels light. He didn't pack any generators when he moved in. You can think of a generator like a plug-in. You get to choose what type of application you wish to create, such as a Backbone application or even a Chrome extension.
 
-To install generator-myflow from npm, run:
+To install generator-creativekoen from npm, run:
 
 ```bash
-npm install -g generator-myflow
+npm install -g generator-creativekoen
 ```
 To install generator-myflow from a local copy, run:
 
@@ -37,7 +37,7 @@ npm link
 Finally, initiate the generator:
 
 ```bash
-yo myflow
+yo creativekoen
 ```
 
 ### Getting To Know Yeoman

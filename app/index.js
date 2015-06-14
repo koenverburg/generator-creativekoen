@@ -8,7 +8,7 @@ var inquirer = require('inquirer');
 
 var base = 'assets';
 
-var myflow = module.exports = function myflow(args, options){
+var creativekoen = module.exports = function creativekoen(args, options){
     yeoman.generators.Base.apply(this, arguments);
     this.welcome;
     this.on('end', function(){
@@ -19,15 +19,15 @@ var myflow = module.exports = function myflow(args, options){
     });
 };
 
-util.inherits(myflow, yeoman.generators.Base);
+util.inherits(creativekoen, yeoman.generators.Base);
 
-myflow.prototype.welcome = function welcome(){
+creativekoen.prototype.welcome = function welcome(){
     if (!this.options['skip-welcome-message']){
         this.log(yosay('Welcome to CreativeKoen\'s workflow generator!'));
     };
 };
 
-myflow.prototype.askForClient = function askForClient() {
+creativekoen.prototype.askForClient = function askForClient() {
     var done = this.async();
     this.prompt([{
             name: 'appName',
@@ -39,7 +39,7 @@ myflow.prototype.askForClient = function askForClient() {
     }.bind(this));
 };
 
-myflow.prototype.askForCss = function askForCss() {
+creativekoen.prototype.askForCss = function askForCss() {
     var done = this.async();
     var prompts = [{
       type: 'checkbox',
@@ -106,7 +106,7 @@ myflow.prototype.askForCss = function askForCss() {
     }.bind(this));
 };
 
-myflow.prototype.askForLost = function askForLost() {
+creativekoen.prototype.askForLost = function askForLost() {
     var done = this.async();
 
     var prompts = [{
@@ -149,7 +149,7 @@ myflow.prototype.askForLost = function askForLost() {
     }.bind(this));
 };
 
-myflow.prototype.askForDeploy = function askForDeploy() {
+creativekoen.prototype.askForDeploy = function askForDeploy() {
     var done = this.async();
     var prompts = [{
       type: 'checkbox',
@@ -165,7 +165,7 @@ myflow.prototype.askForDeploy = function askForDeploy() {
         checked: false
       }]
     },
-    //ask for sass deps
+    // asking for git info
     {
         when: function (answers) {
         return answers && answers.features &&
@@ -186,7 +186,7 @@ myflow.prototype.askForDeploy = function askForDeploy() {
     //     message: 'What is your github usrname?',
     //     default: 'CreativeKoen'
     // },
-    //ask for stylus deps
+    // asking for ftp info
     {
         when: function (answers) {
         return answers && answers.features &&
