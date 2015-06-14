@@ -22,3 +22,5 @@ Are you planning to deploy this project ? y/n
 yes
 	what is your github name
 	what is the repo(aannemen dat het naar gh-pages is!!!)
+
+Is this gonna be a github repo?
