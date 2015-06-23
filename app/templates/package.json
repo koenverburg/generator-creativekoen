@@ -5,15 +5,10 @@
   "repository": "creativekoen/gulp-coffee",
   "main": "gulpfile.coffee",
   "scripts": {
-    "start": "gulp serve --build",
-    "serve:build": "gulp serve --build",
-    "serve:dist": "gulp build--dist"
+    "start": "gulp serve --build"
   },
   "dependencies": {
-    "babel": "^5.6.1",
-    "breakpoint-sass": "^2.6.1",
     "browser-sync": "*",
-    "coffee-script": "^1.9.3",
     "del": "^1.2.0",
     "gulp": "git://github.com/gulpjs/gulp.git#4.0",
     "gulp-autoprefixer": "*",
