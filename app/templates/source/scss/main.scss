@@ -1,16 +1,8 @@
-/* main.scss*/
-@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700);
+@import "vars/_vars";
+@import "vars/_fonts";
+@import "vars/_base";
+@import "vars/_layout";
+@import "vars/_module";
+@import "vars/_state";
+@import "vars/_theme";
 
-@import 'vars/_vars';
-// @import "vars/_breakpoint";
-@import 'vars/_griddle';
-@import 'vars/_griddle-xs';
-@import 'vars/_griddle-sm';
-@import 'vars/_griddle-md';
-@import 'vars/_griddle-lg';
-
-@import 'vars/_fonts';
-@import 'vars/_layout';
-
-@import 'vars/_navbar';
-@import 'vars/_base';
