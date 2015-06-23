@@ -4,19 +4,12 @@ var path = require('path');
 var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 var yosay = require('yosay');
-var inquirer = require('inquirer');
+var git = require('simple-git');
 
-var base = 'assets';
 
 var creativekoen = module.exports = function creativekoen(args, options){
     yeoman.generators.Base.apply(this, arguments);
     this.welcome;
-    this.on('end', function(){
-        this.installDependencies({
-            skipInstall: options['skip-install'],
-            skipMessage: options['skip-install']
-        })
-    });
 };
 
 util.inherits(creativekoen, yeoman.generators.Base);
@@ -38,7 +31,6 @@ creativekoen.prototype.askForClient = function askForClient() {
         done();
     }.bind(this));
 };
-
 creativekoen.prototype.askForCss = function askForCss() {
     var done = this.async();
     var prompts = [{
@@ -119,7 +111,7 @@ creativekoen.prototype.askForLost = function askForLost() {
                 checked: false
             },{
                 name: 'Html (in jade)',
-                value: 'includeHtmlPhp',
+                value: 'includeHtmlJade',
                 checked: false
             },{
                 name: 'Php',
@@ -139,97 +131,101 @@ creativekoen.prototype.askForLost = function askForLost() {
             return features && features.indexOf(feat) !== -1;
         }
 
-        this.includeHtml = answers.includeHtml;
-        this.includeHtmlJade = answers.includeHtmlJade;
-
-        this.includePhp = answers.includePhp;
-        this.includePhpJade = answers.includePhpJade;
+        this.includeHtml		= hasFeature('includeHtml');
+        this.includeHtmlJade	= hasFeature('includeHtmlJade');
+        this.includePhp			= hasFeature('includePhp');
+        this.includePhpJade		= hasFeature('includePhpJade');
 
         done();
     }.bind(this));
 };
 
-creativekoen.prototype.askForDeploy = function askForDeploy() {
-    var done = this.async();
-    var prompts = [{
-      type: 'checkbox',
-      name: 'features',
-      message: 'Are you planning on deploying this project?',
-      choices: [{
-        name: 'github',
-        value: 'includeGH',
-        checked: false
-      },{
-        name: 'ftp',
-        value: 'includeFTP',
-        checked: false
-      }]
-    },
-    // asking for git info
-    {
-        when: function (answers) {
-        return answers && answers.features &&
-          answers.features.indexOf('includeGH') !== -1;
-        },
-        name: 'github username',
-        value: 'githubName',
-        message: 'What is your github username?',
-        default: 'CreativeKoen'
-    },
-    // {
-    //     when: function (answers) {
-    //     return answers && answers.features &&
-    //       answers.features.indexOf('includeGH') !== -1;
-    //     },
-    //     name: 'github repo',
-    //     value: 'githubName',
-    //     message: 'What is your github usrname?',
-    //     default: 'CreativeKoen'
-    // },
-    // asking for ftp info
-    {
-        when: function (answers) {
-        return answers && answers.features &&
-          answers.features.indexOf('includeFTP') !== -1;
-        },
-        name: 'ftpInfo',
-        value: 'ftp_username',
-        message: 'What is your ftp username?',
-        default: 'username'
-    },
-    {
-        when: function (answers) {
-        return answers && answers.features &&
-          answers.features.indexOf('includeFTP') !== -1;
-        },
-        name: 'ftpInfo',
-        value: 'ftp_password',
-        message: 'What is your ftp password?',
-        default: 'password'
-    },
-    {
-        when: function (answers) {
-        return answers && answers.features &&
-          answers.features.indexOf('includeFTP') !== -1;
-        },
-        name: 'ftpInfo',
-        value: 'ftp_path',
-        message: 'What is your ftp path?',
-        default: 'path/to/www/'
-    }
-    ];
+creativekoen.prototype.moveFiles = function moveFiles(){
+	// lets set the project name to the folder name
+	var root = this.appname;
+	// and lets make this name available for other files
+	var projectname = {projectname : this.appname };
 
-    this.prompt(prompts, function (answers) {
-        var features = answers.features;
-        function hasFeature(feat) {
-            return features && features.indexOf(feat) !== -1;
-        }
+	// and move the assets to that folder
 
-        this.includeSass = hasFeature('includeSass');
-        this.includeStylus = hasFeature('includeStylus');
+	// moving root files
+	this.template('gulpfile.js', root+'/Gulpfile.js');
+	this.template('package.json', root+'/package.json', projectname);
+	this.template('bower.json', root+'/bower.json', projectname);
+	this.template('README.md', root+'/README.md');
 
-        this.includeStylusStack = hasFeature('includeStylusStack');
-        this.includeSassStack = hasFeature('includeSassStack');
-        done();
-    }.bind(this));
+	// source JS
+	this.template('source/js/main.js', root+'/source/js/main.js');
+	this.template('source/js/plugins.js', root+'/source/js/plugins.js');
+
+	// boy boilerplate html5 https://github.com/corysimmons/boy
+	this.template('source/js/vendor/calc.min.js', root+'/source/js/vendor/calc.min.js');
+	this.template('source/js/vendor/respond-1.4.2.min.js', root+'/source/js/vendor/respond-1.4.2.min.js');
+	this.template('source/js/vendor/selectivizr-1.0.3b.min.js', root+'/source/js/vendor/selectivizr-1.0.3b.min.js');
+
+
+	// source SCSS
+	if (this.includeSass === true){
+		this.template('source/scss/main.scss', root+'/source/scss/main.scss');
+		this.template('source/scss/vars/_base.scss', root+'/source/scss/vars/_base.scss');
+		this.template('source/scss/vars/_layout.scss', root+'/source/scss/vars/_layout.scss');
+		this.template('source/scss/vars/_module.scss', root+'/source/scss/vars/_module.scss');
+		this.template('source/scss/vars/_theme.scss', root+'/source/scss/vars/_theme.scss');
+		this.template('source/scss/vars/_vars.scss', root+'/source/scss/vars/_vars.scss');
+	}
+
+	if (this.includeStylus === true){
+		this.template('source/stylus/main.styl', root+'/source/stylus/main.styl');
+		this.template('source/stylus/vars/_base.styl', root+'/source/stylus/vars/_base.styl');
+		this.template('source/stylus/vars/_layout.styl', root+'/source/stylus/vars/_layout.styl');
+		this.template('source/stylus/vars/_module.styl', root+'/source/stylus/vars/_module.styl');
+		this.template('source/stylus/vars/_theme.styl', root+'/source/stylus/vars/_theme.styl');
+		this.template('source/stylus/vars/_vars.styl', root+'/source/stylus/vars/_vars.styl');
+	}
+
+	if (this.includeHtml) {
+		this.template('source/index.html', root+'/source/index.html', projectname);
+	}
+	if (this.includeHtmlJade) {
+		this.template('source/index.jade', root+'/source/index.jade', projectname);
+	}
+	if (this.includePhp) {
+		this.template('source/index.php', root+'/source/index.php', projectname);
+	}
+	if (this.includePhpJade) {
+		this.template('source/index.jade', root+'/source/index.jade', projectname);
+	}
+
 };
+
+creativekoen.prototype.installDeps = function installDeps() {
+
+
+
+	this.on('end', function(){
+
+		var done = this.async();
+
+
+		var npmdir = path.join(process.cwd(), this.appname+"\\");
+
+		process.chdir(npmdir);
+
+		this.installDependencies({
+			callback: function() {
+				this.spawnCommand('gulp', ['build', '--build']);
+				this.spawnCommand('gulp', ['vendor', '--build']);
+				if (this.options['git']){
+					git(npmdir)
+						.init()
+						.add('./*')
+						.commit('init a new project with CreativeKoen\'s Generator')
+						.checkoutLocalBranch('develop');
+				}
+			}.bind(this)
+		})
+
+		done();
+	});
+};
+
