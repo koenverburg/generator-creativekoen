@@ -3,6 +3,6 @@ bower_components/
 *.txt
 *.log
 .DS_Store
+*.swp
 build/
-app/
-_package.json
+dist/
