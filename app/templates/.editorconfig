@@ -1,0 +1,20 @@
+[*.styl]
+indent_style = tab
+indent_size = 2
+
+
+[*.jade]
+indent_style = tab
+indent_size = 2
+
+[*.js]
+indent_style = tab
+indent_size = 4
+
+[*.scss]
+indent_style = tab
+indent_size = 4
+
+[*.{html,php}]
+indent_style = tab
+indent_size = 4
