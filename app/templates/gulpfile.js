@@ -35,12 +35,11 @@ var displayError = function(error) {
 var SOURCEPATH = 'source/';
 var BUILDPATH = 'build/';
 var DISTPATH = 'dist/';
-
-
-
-
-
 <% if (includeStylus) {%>
+
+
+
+
 // -------------------------------------------------------
 // Stylus
 // -------------------------------------------------------
@@ -48,7 +47,7 @@ function stylus(){
 	var nib = require('nib');
 	var rupture = require('rupture');
 	var lost = require('lost');
-	return gulp.src(SOURCEPATH+'stylus/*.styl')
+	gulp.src(SOURCEPATH+'stylus/*.styl')
 		.pipe($.memoryCache('stylusCached'))
 		.pipe($.stylus({
 			compress: false,
@@ -76,11 +75,6 @@ function stylus(){
 }
 gulp.task(stylus);
 <% } %>
-
-
-
-
-
 <% if (includeSass) {%>
 // -------------------------------------------------------
 // Sass
@@ -91,7 +85,7 @@ function scss(){
 
 // task failing
 	var lost = require('lost');
-	return gulp.src(SOURCEPATH+'scss/*.scss')
+	gulp.src(SOURCEPATH+'scss/*.scss')
 		.pipe($.memoryCache('scssCached'))
 		.pipe($.sass({
 			compress: false,
@@ -126,7 +120,7 @@ gulp.task(scss);
 // Scripts
 // -------------------------------------------------------
 function scripts(){
-	return gulp.src([SOURCEPATH+'js/*.js', !SOURCEPATH+'js/**/vendor/*.js'])
+	gulp.src([SOURCEPATH+'js/*.js'])
 			.pipe($.memoryCache('jsCached'))
 			.pipe($.jshint())
 			.pipe($.jshint.reporter($.jshintStylish))
@@ -157,11 +151,6 @@ function jade(){
 }
 gulp.task(jade);
 <% } %>
-
-
-
-
-
 <% if(includePhpJade){%>
 // -------------------------------------------------------
 // Jade to PHP
@@ -176,11 +165,6 @@ function jadePhp(){
 }
 gulp.task(jadePhp);
 <% } %>
-
-
-
-
-
 <% if(includeHtml){%>
 // -------------------------------------------------------
 // HTML
@@ -193,18 +177,13 @@ function html() {
 }
 gulp.task(html);
 <% } %>
-
-
-
-
-
 <% if(includePhp){%>
 // -------------------------------------------------------
 // PHP
 // -------------------------------------------------------
 function php(){
 	gulp.src(SOURCEPATH+'*.php')
-		.pipe($.memoryCache('PhpCached'))
+		.pipe($.memoryCache('phpCached'))
 		.pipe($.if(args.build, gulp.dest(BUILDPATH)))
 		.pipe($.if(args.dist, gulp.dest(DISTPATH)));
 }
@@ -251,11 +230,34 @@ gulp.task('cleanCache', function () {
 
 
 // -------------------------------------------------------
+// Vendor
+// -------------------------------------------------------
+gulp.task('vendor:js', function(){
+	gulp.src([
+		'bower_components/jquery/dist/jquery.min.js',
+		'bower_components/modernizr/modernizr.js',
+		'source/js/vendor/*.js'
+		])
+		.pipe($.if(args.build, gulp.dest(BUILDPATH+'js/vendor')))
+		.pipe($.if(args.dist, gulp.dest(DISTPATH+'js/vendor') ));
+
+gulp.task('vendor:css', function(){
+	gulp.src(['bower_components/normalize.css/normalize.css'])
+		.pipe($.if(args.build, gulp.dest(BUILDPATH+'css/vendor')))
+		.pipe($.if(args.dist, gulp.dest(DISTPATH+'css/vendor') ));
+
+gulp.task('vendor', gulp.series('vendor:js','vendor:css'));
+
+
+
+
+
+// -------------------------------------------------------
 // Watch
 // -------------------------------------------------------
 function watch(){
-	// server
 
+	// build server
 	if (args.build == true) {
 		console.log('-----------------------\n');
 		console.log('build server is running\n');
@@ -268,11 +270,14 @@ function watch(){
 			index: 'index.html',
 			port: 3000,
 			notify: false,
-			open: false,
-			ui: false
+			open: true,
+			ui: false,
+			browser: ['firefox']
 
-			// this is to see the http requests
-			// uncomment if you want that
+			/*
+			this is to see the http requests
+			uncomment if you want that
+			*/
 
 			// middleware: function(req, res, next){
 			//	console.log(req.url);
@@ -284,25 +289,28 @@ function watch(){
 		console.log('-----------------------\n');
 		console.log('dist server is running \n');
 		console.log('-----------------------\n');
-	browserSync({
-		//proxy: 'local.gelskemout.nl',
-		server: {
-			baseDir: DISTPATH
-		},
-		index: 'index.html',
-		port: 6000,
-		notify: false,
-		open: false,
-		ui: false
+		browserSync({
+			//proxy: 'local.gelskemout.nl',
+			server: {
+				baseDir: DISTPATH
+			},
+			index: 'index.html',
+			port: 6000,
+			notify: false,
+			open: open,
+			ui: false,
+			browser: ['firefox']
 
-		// this is to see the http requests
-		// uncomment if you want that
+			/*
+			this is to see the http requests
+			uncomment if you want that
+			*/
 
-		// middleware: function(req, res, next){
-		//     console.log(req.url);
-		//     next();
-		// }
-	});
+			// middleware: function(req, res, next){
+			//     console.log(req.url);
+			//     next();
+			// }
+		});
 	}
 
 
@@ -379,9 +387,7 @@ function watch(){
                 }
             });
 <% } %>
-
-
-	// CACHE scripts/sass/stylus/
+// CACHE scripts/sass/stylus/
 <% if (includeStylus) {%>
     gulp.watch( watchFiles[1],
         gulp.parallel(stylus, reload ))
@@ -439,15 +445,15 @@ gulp.task(watch);
 // -------------------------------------------------------
 gulp.task('build',
 	gulp.series(
+		'cleanCache',
 		scripts,
 		<% if (includeStylus) {%>stylus<% } %>
 		<% if (includeSass) {%>scss<% } %>,
-
 		<% if (includeHtml) {%>html<% } %>
 		<% if (includeHtmlJade) {%>jade<% } %>
 		<% if (includePhp) {%>php<% } %>
 		<% if (includePhpJade) {%>jadePhp<% } %>
-		));
+));
 
 
 
@@ -461,9 +467,8 @@ gulp.task('serve', gulp.series('build', watch),
 		scripts,
 		<% if (includeStylus) {%>stylus<% } %>
 		<% if (includeSass) {%>scss<% } %>,
-
 		<% if (includeHtml) {%>html<% } %>
 		<% if (includeHtmlJade) {%>jade<% } %>
 		<% if (includePhp) {%>php<% } %>
 		<% if (includePhpJade) {%>jadePhp<% } %>
-		));
+));
