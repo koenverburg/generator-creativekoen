@@ -144,15 +144,27 @@ creativekoen.prototype.moveFiles = function moveFiles(){
 	// lets set the project name to the folder name
 	var root = this.appname;
 	// and lets make this name available for other files
-	var projectname = {projectname : this.appname };
+	var projectname = {
+		projectname : this.appname,
+		includeHtmlJade: this.includeHtmlJade,
+		includePhpJade: this.includePhpJade,
+		includeSass: this.includeSass,
+		includeStylus: this.includeStylus,
+		includeSassStack: this.includeSassStack,
+		includeStylusStack: this.includeStylusStack,
+
+	};
 
 	// and move the assets to that folder
 
 	// moving root files
 	this.template('gulpfile.js', root+'/Gulpfile.js');
 	this.template('package.json', root+'/package.json', projectname);
+	this.template('npm-shrinkwrap.json', root+'/npm-shrinkwrap.json');
 	this.template('bower.json', root+'/bower.json', projectname);
 	this.template('README.md', root+'/README.md');
+	this.template('.editorconfig', root+'/.editorconfig');
+	this.template('.gitignore', root+'/.gitignore');
 
 	// source JS
 	this.template('source/js/main.js', root+'/source/js/main.js');
@@ -170,6 +182,7 @@ creativekoen.prototype.moveFiles = function moveFiles(){
 		this.template('source/scss/vars/_base.scss', root+'/source/scss/vars/_base.scss');
 		this.template('source/scss/vars/_layout.scss', root+'/source/scss/vars/_layout.scss');
 		this.template('source/scss/vars/_module.scss', root+'/source/scss/vars/_module.scss');
+		this.template('source/scss/vars/_state.scss', root+'/source/scss/vars/_state.scss');
 		this.template('source/scss/vars/_theme.scss', root+'/source/scss/vars/_theme.scss');
 		this.template('source/scss/vars/_vars.scss', root+'/source/scss/vars/_vars.scss');
 	}
@@ -179,6 +192,7 @@ creativekoen.prototype.moveFiles = function moveFiles(){
 		this.template('source/stylus/vars/_base.styl', root+'/source/stylus/vars/_base.styl');
 		this.template('source/stylus/vars/_layout.styl', root+'/source/stylus/vars/_layout.styl');
 		this.template('source/stylus/vars/_module.styl', root+'/source/stylus/vars/_module.styl');
+		this.template('source/stylus/vars/_state.styl', root+'/source/stylus/vars/_state.styl');
 		this.template('source/stylus/vars/_theme.styl', root+'/source/stylus/vars/_theme.styl');
 		this.template('source/stylus/vars/_vars.styl', root+'/source/stylus/vars/_vars.styl');
 	}
@@ -200,8 +214,6 @@ creativekoen.prototype.moveFiles = function moveFiles(){
 
 creativekoen.prototype.installDeps = function installDeps() {
 
-
-
 	this.on('end', function(){
 
 		var done = this.async();
@@ -213,8 +225,13 @@ creativekoen.prototype.installDeps = function installDeps() {
 
 		this.installDependencies({
 			callback: function() {
-				this.spawnCommand('gulp', ['build', '--build']);
-				this.spawnCommand('gulp', ['vendor', '--build']);
+				this.spawnCommand('gulp', ['build','--build']);
+				this.spawnCommand('gulp', ['vendor','--build']);
+
+				if (this.options['run-gulp']) {
+					this.spawnCommand('gulp', ['serve','--build']);
+				}
+
 				if (this.options['git']){
 					git(npmdir)
 						.init()
