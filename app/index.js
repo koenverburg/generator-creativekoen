@@ -160,7 +160,7 @@ creativekoen.prototype.moveFiles = function moveFiles(){
 	// moving root files
 	this.template('gulpfile.js', root+'/Gulpfile.js');
 	this.template('package.json', root+'/package.json', projectname);
-	this.template('npm-shrinkwrap.json', root+'/npm-shrinkwrap.json');
+	// this.template('npm-shrinkwrap.json', root+'/npm-shrinkwrap.json');
 	this.template('bower.json', root+'/bower.json', projectname);
 	this.template('README.md', root+'/README.md');
 	this.template('.editorconfig', root+'/.editorconfig');
