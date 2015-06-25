@@ -1,11 +1,11 @@
 {
   "name": "<%= projectname %>",
   "version": "1.0.5",
-  "description": "This is my gulpfile that I use in my projects.",
-  "repository": "creativekoen/gulp-coffee",
+  "description": "This a Yeoman created package.json with the CreativeKoen Generetor",
+  "repository": "<%= projectname %>",
   "main": "gulpfile.coffee",
   "scripts": {
-    "start": "gulp serve --build"
+	"start": "gulp serve --build"
   },
   "dependencies": {
     "browser-sync": "*",
@@ -15,8 +15,12 @@
     "gulp-concat": "*",
     "gulp-exec": "*",
     "gulp-if": "*",
+	<% if (includeHtmlJade) { %>
     "gulp-jade": "*",
+	<% } %>
+	<% if (includePhpJade) {%>
     "gulp-jade-php": "*",
+	<% } %>
     "gulp-jshint": "*",
     "gulp-load-plugins": "*",
     "gulp-memory-cache": "*",
@@ -24,14 +28,23 @@
     "gulp-plumber": "*",
     "gulp-postcss": "^5.1.8",
     "gulp-rename": "*",
+	<% if (includeSass) {%>
     "gulp-sass": "^2.0.1",
+		<% if (includeSassStack) {%>
+		"lost": "*",
+		<% } %>
+	<% } %>
+	<% if (includeStylus) {%>
     "gulp-stylus": "*",
+		<% if (includeStylusStack) {%>
+		"nib": "*",
+		"rupture": "*",
+		"lost": "*",
+		<% } %>
+	<% } %>
     "gulp-uglify": "*",
     "gulp-util": "*",
     "jshint-stylish": "*",
-    "lost": "*",
-    "nib": "*",
-    "rupture": "*",
     "yargs": "*"
   },
   "author": "",
