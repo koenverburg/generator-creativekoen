@@ -43,10 +43,12 @@ var DISTPATH = 'dist/';
 // -------------------------------------------------------
 // Stylus
 // -------------------------------------------------------
-gulp.task('stylus', function () {
+function stylus() {
+	<% if (includeStylusStack) { %>
 	var nib = require('nib');
 	var rupture = require('rupture');
 	var lost = require('lost');
+	<% } %>
 	gulp.src(SOURCEPATH+'stylus/*.styl')
 		.pipe($.memoryCache('stylusCached'))
 		.pipe($.stylus({
@@ -72,13 +74,13 @@ gulp.task('stylus', function () {
         .pipe($.if(args.dist, $.minifyCss()))
         .pipe($.if(args.build, gulp.dest(BUILDPATH+'css')))
         .pipe($.if(args.dist, gulp.dest(DISTPATH+'css')));
-});
+};
 <% } %>
 <% if (includeSass) {%>
 // -------------------------------------------------------
 // Sass
 // -------------------------------------------------------
-gulp.task('scss', function () {
+function scss() {
 // var breakpoint-sass = require('breakpoint-sass');
 // there is a failing build of breakpoint-sass so import it using bower
 
@@ -107,7 +109,7 @@ gulp.task('scss', function () {
         .pipe($.if(args.dist, $.minifyCss()))
         .pipe($.if(args.build, gulp.dest(BUILDPATH+'css')))
         .pipe($.if(args.dist, gulp.dest(DISTPATH+'css')));
-});
+};
 <% } %>
 
 
@@ -117,7 +119,7 @@ gulp.task('scss', function () {
 // -------------------------------------------------------
 // Scripts
 // -------------------------------------------------------
-gulp.task('scripts', function () {
+function scripts() {
 	gulp.src(SOURCEPATH+'js/*.js')
 			.pipe($.memoryCache('jsCached'))
 			.pipe($.jshint())
@@ -128,7 +130,7 @@ gulp.task('scripts', function () {
 			.pipe($.if(args.dist, $.rename({ suffix: '.min' })))
 			.pipe($.if(args.build, gulp.dest(BUILDPATH+'js')))
 			.pipe($.if(args.dist, gulp.dest(DISTPATH+'js') ));
-});
+};
 
 
 
@@ -138,50 +140,49 @@ gulp.task('scripts', function () {
 // -------------------------------------------------------
 // Jade
 // -------------------------------------------------------
-gulp.task('jade', function () {
+function jade() {
 	gulp.src(SOURCEPATH+'*.jade')
 		.pipe($.memoryCache('jadeCached'))
 		.pipe($.if(args.build, $.jade({pretty: false}) ))
 		.pipe($.if(args.dist, $.jade({pretty: true}) ))
 		.pipe($.if(args.build, gulp.dest(BUILDPATH)))
 		.pipe($.if(args.dist, gulp.dest(DISTPATH)));
-});
+};
 <% } %>
 <% if(includePhpJade){%>
 // -------------------------------------------------------
 // Jade to PHP
 // -------------------------------------------------------
-gulp.task('jadePhp', function () {
+function jadePhp() {
 	gulp.src(SOURCEPATH+'*.jade')
 		.pipe($.memoryCache('jadePhpCached'))
 		.pipe($.if(args.build, $.jadePhp({pretty: false}) ))
 		.pipe($.if(args.dist, $.jadePhp({pretty: true}) ))
 		.pipe($.if(args.build, gulp.dest(BUILDPATH)))
 		.pipe($.if(args.dist, gulp.dest(DISTPATH)));
-});
-gulp.task(jadePhp);
+};
 <% } %>
 <% if(includeHtml){%>
 // -------------------------------------------------------
 // HTML
 // -------------------------------------------------------
-gulp.task('html', function () {
+function html() {
 	gulp.src(SOURCEPATH+'*.html')
 		.pipe($.memoryCache('htmlCached'))
 		.pipe($.if(args.build, gulp.dest(BUILDPATH)))
 		.pipe($.if(args.dist, gulp.dest(DISTPATH)));
-});
+};
 <% } %>
 <% if(includePhp){%>
 // -------------------------------------------------------
 // PHP
 // -------------------------------------------------------
-gulp.task('php', function () {
+function php() {
 	gulp.src(SOURCEPATH+'*.php')
 		.pipe($.memoryCache('phpCached'))
 		.pipe($.if(args.build, gulp.dest(BUILDPATH)))
 		.pipe($.if(args.dist, gulp.dest(DISTPATH)));
-});
+};
 <% } %>
 
 
@@ -191,12 +192,12 @@ gulp.task('php', function () {
 // -------------------------------------------------------
 // Editor
 // -------------------------------------------------------
-gulp.task('editor', function () {
+function editor() {
 	var options = {err: true,stderr: true,stdout: true};
 	gulp.src('/', {read:false})
 		.pipe($.exec('gvim'))
 		.pipe($.exec.reporter(options));
-});
+};
 
 
 
@@ -252,7 +253,7 @@ gulp.task('vendor', gulp.series('vendor:js','vendor:css'));
 // -------------------------------------------------------
 // Watch
 // -------------------------------------------------------
-gulp.task('watch', function () {
+function watch() {
 
 	// build server
 	if (args.build == true) {
@@ -323,7 +324,7 @@ gulp.task('watch', function () {
 
 <% if(includeHtml){%>
     gulp.watch( watchFiles[5],
-        gulp.parallel('html', reload))
+        gulp.parallel(html, reload))
             .on('change', function(event){
                 console.log('cache check');
                 if (event.type === 'deleted'){
@@ -339,7 +340,7 @@ gulp.task('watch', function () {
 
 <% if(includePhp){%>
     gulp.watch( watchFiles[4],
-        gulp.parallel('php', reload ))
+        gulp.parallel(php, reload ))
             .on('change', function(event){
                 console.log('cache check');
                 if (event.type === 'deleted'){
@@ -355,7 +356,7 @@ gulp.task('watch', function () {
 
 <% if(includeHtmlJade){%>
     gulp.watch( watchFiles[3],
-        gulp.parallel('jade', reload ))
+        gulp.parallel(jade, reload ))
             .on('change', function(event){
                 console.log('cache check');
                 if (event.type === 'deleted'){
@@ -371,7 +372,7 @@ gulp.task('watch', function () {
 
 <% if(includePhpJade){%>
     gulp.watch( watchFiles[3],
-        gulp.parallel('jadePhp', reload ))
+        gulp.parallel(jadePhp, reload ))
             .on('change', function(event){
                 console.log('cache check');
                 if (event.type === 'deleted'){
@@ -387,7 +388,7 @@ gulp.task('watch', function () {
 // CACHE scripts/sass/stylus/
 <% if (includeStylus) {%>
     gulp.watch( watchFiles[1],
-        gulp.parallel('stylus', reload ))
+        gulp.parallel(stylus, reload ))
             .on('change', function(event){
                 console.log('cache check');
                 if (event.type === 'deleted'){
@@ -403,7 +404,7 @@ gulp.task('watch', function () {
 
 <% if (includeSass) {%>
     gulp.watch( watchFiles[0],
-        gulp.parallel('scss', reload ))
+        gulp.parallel(scss, reload ))
             .on('change', function(event){
                 console.log('cache check');
                 if (event.type === 'deleted'){
@@ -418,7 +419,7 @@ gulp.task('watch', function () {
 <% } %>
 
     gulp.watch( watchFiles[2],
-        gulp.parallel('scripts', reload ))
+        gulp.parallel(scripts, reload ))
             .on('change', function(event){
                 console.log('cache check');
                 if (event.type === 'deleted'){
@@ -430,7 +431,7 @@ gulp.task('watch', function () {
                     console.log('cache updated');
                 }
             });
-});
+};
 
 
 
@@ -442,13 +443,13 @@ gulp.task('watch', function () {
 gulp.task('build',
 	gulp.parallel(
 		'cleanCache',
-		'scripts',
-		<% if (includeStylus) {%>'stylus'<% } %>
-		<% if (includeSass) {%>'scss'<% } %>,
-		<% if (includeHtml) {%>'html'<% } %>
-		<% if (includeHtmlJade) {%>'jade'<% } %>
-		<% if (includePhp) {%>'php'<% } %>
-		<% if (includePhpJade) {%>'jadePhp'<% } %>
+		scripts,
+		<% if (includeStylus) {%>stylus<% } %>
+		<% if (includeSass) {%>scss<% } %>,
+		<% if (includeHtml) {%>html<% } %>
+		<% if (includeHtmlJade) {%>jade<% } %>
+		<% if (includePhp) {%>php<% } %>
+		<% if (includePhpJade) {%>jadePhp<% } %>
 ));
 
 
@@ -458,13 +459,13 @@ gulp.task('build',
 // -------------------------------------------------------
 // Serve
 // -------------------------------------------------------
-gulp.task('serve', gulp.series('build', 'watch','editor'),
-	gulp.parallel(
-		'scripts',
-		<% if (includeStylus) {%>'stylus'<% } %>
-		<% if (includeSass) {%>'scss'<% } %>,
-		<% if (includeHtml) {%>'html'<% } %>
-		<% if (includeHtmlJade) {%>'jade'<% } %>
-		<% if (includePhp) {%>'php'<% } %>
-		<% if (includePhpJade) {%>'jadePhp'<% } %>
+gulp.task('serve', gulp.parallel('build',editor,
+		scripts,
+		<% if (includeStylus) {%>stylus<% } %>
+		<% if (includeSass) {%>scss<% } %>,
+		<% if (includeHtml) {%>html<% } %>
+		<% if (includeHtmlJade) {%>jade<% } %>
+		<% if (includePhp) {%>php<% } %>
+		<% if (includePhpJade) {%>jadePhp<% } %>
+		,watch
 ));
