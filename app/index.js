@@ -31,6 +31,37 @@ creativekoen.prototype.askForClient = function askForClient() {
         done();
     }.bind(this));
 };
+creativekoen.prototype.askForServer = function askForServer() {
+    var done = this.async();
+
+    var prompts = [{
+        type: 'checkbox',
+        name: 'features',
+        message: 'What kind of server do you want to use?',
+        choices: [{
+                name: 'localhost',
+                value: 'localhost',
+                checked: false
+            },{
+                name: 'phpserver',
+                value: 'gulp-phpServer',
+                checked: true
+            }
+            ]
+        }];
+
+    this.prompt(prompts, function(answers){
+        var features = answers.features;
+        function hasFeature(feat){
+            return features && features.indexOf(feat) !== -1;
+        }
+
+        this.localhost		= hasFeature('localhost');
+        this.phpserver	= hasFeature('phpserver');
+
+        done();
+    }.bind(this));
+};
 creativekoen.prototype.askForCss = function askForCss() {
     var done = this.async();
     var prompts = [{
@@ -152,7 +183,7 @@ creativekoen.prototype.moveFiles = function moveFiles(){
 		includeStylus: this.includeStylus,
 		includeSassStack: this.includeSassStack,
 		includeStylusStack: this.includeStylusStack,
-
+		includePhp: this.phpserver
 	};
 
 	// and move the assets to that folder
