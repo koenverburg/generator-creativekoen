@@ -1,7 +1,9 @@
 # What will Yeoman ask
 
 what is the name of your client name ?
-what is your localhost vhosts name ?
+what kind of server do you want to use?
+	do you want me to spin up a php serve?
+	what is your localhost vhosts name ?
 
 Which Preprocesser do you want ? sass/stylus
 	stylus
