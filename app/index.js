@@ -7,20 +7,19 @@ var yosay = require('yosay');
 var git = require('simple-git');
 
 
-var creativekoen = module.exports = function creativekoen(args, options){
+var creativekoen = module.exports = function creativekoen(args, options){ // {{{
     yeoman.generators.Base.apply(this, arguments);
     this.welcome;
 };
-
 util.inherits(creativekoen, yeoman.generators.Base);
-
-creativekoen.prototype.welcome = function welcome(){
+// }}}
+creativekoen.prototype.welcome = function welcome(){ //{{{
     if (!this.options['skip-welcome-message']){
         this.log(yosay('Welcome to CreativeKoen\'s workflow generator!'));
     };
 };
-
-creativekoen.prototype.askForClient = function askForClient() {
+// }}}
+creativekoen.prototype.askForClient = function askForClient() { //{{{
     var done = this.async();
     this.prompt([{
             name: 'appName',
@@ -31,7 +30,8 @@ creativekoen.prototype.askForClient = function askForClient() {
         done();
     }.bind(this));
 };
-creativekoen.prototype.askForServer = function askForServer() {
+//}}}
+creativekoen.prototype.askForServer = function askForServer() { //{{{
     var done = this.async();
 
     var prompts = [{
@@ -62,7 +62,8 @@ creativekoen.prototype.askForServer = function askForServer() {
         done();
     }.bind(this));
 };
-creativekoen.prototype.askForCss = function askForCss() {
+//}}}
+creativekoen.prototype.askForCss = function askForCss() { // {{{
     var done = this.async();
     var prompts = [{
       type: 'checkbox',
@@ -128,8 +129,8 @@ creativekoen.prototype.askForCss = function askForCss() {
         done();
     }.bind(this));
 };
-
-creativekoen.prototype.askForLost = function askForLost() {
+// }}}
+creativekoen.prototype.askForLost = function askForLost() { //{{{
     var done = this.async();
 
     var prompts = [{
@@ -170,8 +171,8 @@ creativekoen.prototype.askForLost = function askForLost() {
         done();
     }.bind(this));
 };
-
-creativekoen.prototype.moveFiles = function moveFiles(){
+// }}}
+creativekoen.prototype.moveFiles = function moveFiles(){ // {{{
 	// lets set the project name to the folder name
 	var root = this.appname;
 	// and lets make this name available for other files
@@ -208,7 +209,7 @@ creativekoen.prototype.moveFiles = function moveFiles(){
 
 
 	// source SCSS
-	if (this.includeSass === true){
+	if (this.includeSass === true){ // {{{
 		this.template('source/scss/main.scss', root+'/source/scss/main.scss');
 		this.template('source/scss/vars/_base.scss', root+'/source/scss/vars/_base.scss');
 		this.template('source/scss/vars/_layout.scss', root+'/source/scss/vars/_layout.scss');
@@ -217,8 +218,9 @@ creativekoen.prototype.moveFiles = function moveFiles(){
 		this.template('source/scss/vars/_theme.scss', root+'/source/scss/vars/_theme.scss');
 		this.template('source/scss/vars/_vars.scss', root+'/source/scss/vars/_vars.scss');
 	}
+    // }}}
 
-	if (this.includeStylus === true){
+	if (this.includeStylus === true){ //{{{
 		this.template('source/stylus/main.styl', root+'/source/stylus/main.styl');
 		this.template('source/stylus/vars/_base.styl', root+'/source/stylus/vars/_base.styl');
 		this.template('source/stylus/vars/_layout.styl', root+'/source/stylus/vars/_layout.styl');
@@ -227,6 +229,7 @@ creativekoen.prototype.moveFiles = function moveFiles(){
 		this.template('source/stylus/vars/_theme.styl', root+'/source/stylus/vars/_theme.styl');
 		this.template('source/stylus/vars/_vars.styl', root+'/source/stylus/vars/_vars.styl');
 	}
+    //}}}
 
 	if (this.includeHtml) {
 		this.template('source/index.html', root+'/source/index.html', projectname);
@@ -241,9 +244,8 @@ creativekoen.prototype.moveFiles = function moveFiles(){
 		this.template('source/index.jade', root+'/source/index.jade', projectname);
 	}
 
-};
-
-creativekoen.prototype.installDeps = function installDeps() {
+};// }}}
+creativekoen.prototype.installDeps = function installDeps() { // {{{
 
 	this.on('end', function(){
 
@@ -255,12 +257,25 @@ creativekoen.prototype.installDeps = function installDeps() {
 		process.chdir(npmdir);
 
 		this.installDependencies({
+			skipInstall: this.options['skip-install'],
 			callback: function() {
-				this.spawnCommand('gulp', ['build','--build']);
-				this.spawnCommand('gulp', ['vendor','--build']);
+				if (!this.options['skip-install']) {
+					this.spawnCommand('gulp', ['build','--build']);
+					this.spawnCommand('gulp', ['vendor','--build']);
+				}
 
-				if (this.options['run-gulp']) {
+				if (this.options['run-gulp'] && !this.phpserver) {
 					this.spawnCommand('gulp', ['serve','--build']);
+				}
+				if (this.phpserver = true) {
+					this.log(
+						'run '+
+						chalk.yellow('gulp phpserver')+
+						' in one terminal window and run '+
+						chalk.yellow('gulp serve --build')+
+						' in the an other terminal window\n'
+					)
+
 				}
 
 				if (this.options['git']){
@@ -268,6 +283,7 @@ creativekoen.prototype.installDeps = function installDeps() {
 						.init()
 						.add('./*')
 						.commit('init a new project with CreativeKoen\'s Generator')
+						// .checkoutLocalBranch('feature')
 						.checkoutLocalBranch('develop');
 				}
 			}.bind(this)
@@ -276,4 +292,4 @@ creativekoen.prototype.installDeps = function installDeps() {
 		done();
 	});
 };
-
+// }}}
