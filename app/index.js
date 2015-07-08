@@ -56,7 +56,7 @@ creativekoen.prototype.askForServer = function askForServer() { //{{{
             return features && features.indexOf(feat) !== -1;
         }
 
-        this.localhost		= hasFeature('localhost');
+        this.localhost	= hasFeature('localhost');
         this.phpserver	= hasFeature('phpserver');
 
         done();
@@ -70,20 +70,20 @@ creativekoen.prototype.askForCss = function askForCss() { // {{{
       name: 'features',
       message: 'Would you like Sass or Stylus?',
       choices: [{
-        name: 'Stylus',
-        value: 'includeStylus',
-        checked: true
-      },{
-        name: 'Sass',
-        value: 'includeSass',
-        checked: false
-      }]
+		name: 'Stylus',
+		value: 'includeStylus',
+		checked: true
+    },{
+		name: 'Sass',
+		value: 'includeSass',
+		checked: false
+    }]
     },
     //ask for sass deps
     {
         when: function (answers) {
         return answers && answers.features &&
-          answers.features.indexOf('includeSass') !== -1;
+			answers.features.indexOf('includeSass') !== -1;
         },
         type: 'confirm',
         name: 'SassStack',
@@ -118,19 +118,11 @@ creativekoen.prototype.askForCss = function askForCss() { // {{{
         this.includeStylusStack = hasFeature('includeStylusStack');
         this.includeSassStack = hasFeature('includeSassStack');
 
-        // if (this.includeSass && this.includeSassStack) {
-        //    console.log('Sass with a glass of bourbon breakpoint and jeet');
-        // }
-
-        // if (this.includeStylus && this.includeStylusStack) {
-        //    console.log('stylus with nib rupter and jeet selected');
-        // }
-
         done();
     }.bind(this));
 };
 // }}}
-creativekoen.prototype.askForLost = function askForLost() { //{{{
+creativekoen.prototype.askForHtml = function askForHtml() { //{{{
     var done = this.async();
 
     var prompts = [{
@@ -172,6 +164,17 @@ creativekoen.prototype.askForLost = function askForLost() { //{{{
     }.bind(this));
 };
 // }}}
+creativekoen.prototype.askForCoffee = function askForCoffee() { //{{{
+    var done = this.async();
+    this.prompt([{
+            name: 'includeCoffee',
+            message: 'Do you want to use Coffee Script?',
+            default: false
+    }], function(answers){
+        this.includeCoffee = answers.includeCoffee;
+        done();
+    }.bind(this));
+}; // }}}
 creativekoen.prototype.moveFiles = function moveFiles(){ // {{{
 	// lets set the project name to the folder name
 	var root = this.appname;
@@ -179,25 +182,31 @@ creativekoen.prototype.moveFiles = function moveFiles(){ // {{{
 	var projectname = {
 		projectname : this.appname,
 		includeHtmlJade: this.includeHtmlJade,
+		includeHtml: this.includeHtml,
 		includePhpJade: this.includePhpJade,
 		includeSass: this.includeSass,
 		includeStylus: this.includeStylus,
 		includeSassStack: this.includeSassStack,
 		includeStylusStack: this.includeStylusStack,
-		includePhp: this.phpserver
+		includeCoffee: this.includeCoffee,
+		includePhp: this.phpserver,
+		localhost: this.localhost
 	};
 
 	// and move the assets to that folder
 
 	// moving root files
-	this.template('gulpfile.js', root+'/Gulpfile.js');
+	this.template('gulpfile.js', root+'/Gulpfile.js', projectname);
 	this.template('package.json', root+'/package.json', projectname);
-	// this.template('npm-shrinkwrap.json', root+'/npm-shrinkwrap.json');
 	this.template('bower.json', root+'/bower.json', projectname);
 	this.template('README.md', root+'/README.md');
 	this.template('.editorconfig', root+'/.editorconfig');
 	this.template('.gitignore', root+'/.gitignore');
 
+	if (this.includeCoffee) {
+		this.template('source/coffee/main.coffee', root+'/source/coffee/main.coffee');
+		this.template('source/coffee/plugins.coffee', root+'/source/coffee/plugin.coffee');
+	}
 	// source JS
 	this.template('source/js/main.js', root+'/source/js/main.js');
 	this.template('source/js/plugins.js', root+'/source/js/plugins.js');
@@ -251,7 +260,6 @@ creativekoen.prototype.installDeps = function installDeps() { // {{{
 
 		var done = this.async();
 
-
 		var npmdir = path.join(process.cwd(), this.appname+"\\");
 
 		process.chdir(npmdir);
@@ -264,10 +272,10 @@ creativekoen.prototype.installDeps = function installDeps() { // {{{
 					this.spawnCommand('gulp', ['vendor','--build']);
 				}
 
-				if (this.options['run-gulp'] && !this.phpserver) {
+				if (this.options['run-gulp'] && !this.phpserver && this.localhost) {
 					this.spawnCommand('gulp', ['serve','--build']);
 				}
-				if (this.phpserver = true) {
+				if (this.phpserver = true && !this.localhost) { //{{{
 					this.log(
 						'run '+
 						chalk.yellow('gulp phpserver')+
@@ -276,16 +284,16 @@ creativekoen.prototype.installDeps = function installDeps() { // {{{
 						' in the an other terminal window\n'
 					)
 
-				}
+				} //}}}
 
-				if (this.options['git']){
+				if (this.options['git']){ //{{{
 					git(npmdir)
 						.init()
 						.add('./*')
 						.commit('init a new project with CreativeKoen\'s Generator')
 						// .checkoutLocalBranch('feature')
 						.checkoutLocalBranch('develop');
-				}
+				} // }}}
 			}.bind(this)
 		})
 
