@@ -167,6 +167,7 @@ creativekoen.prototype.askForHtml = function askForHtml() { //{{{
 creativekoen.prototype.askForCoffee = function askForCoffee() { //{{{
     var done = this.async();
     this.prompt([{
+			type: 'confirm',
             name: 'includeCoffee',
             message: 'Do you want to use Coffee Script?',
             default: false
@@ -180,17 +181,17 @@ creativekoen.prototype.moveFiles = function moveFiles(){ // {{{
 	var root = this.appname;
 	// and lets make this name available for other files
 	var projectname = {
-		projectname : this.appname,
-		includeHtmlJade: this.includeHtmlJade,
-		includeHtml: this.includeHtml,
-		includePhpJade: this.includePhpJade,
-		includeSass: this.includeSass,
-		includeStylus: this.includeStylus,
-		includeSassStack: this.includeSassStack,
+		projectname:		this.appname,
+		includeHtmlJade:	this.includeHtmlJade,
+		includeHtml:		this.includeHtml,
+		includePhpJade:		this.includePhpJade,
+		includeSass:		this.includeSass,
+		includeStylus:		this.includeStylus,
+		includeSassStack:	this.includeSassStack,
 		includeStylusStack: this.includeStylusStack,
-		includeCoffee: this.includeCoffee,
-		includePhp: this.phpserver,
-		localhost: this.localhost
+		includeCoffee:		this.includeCoffee,
+		includePhp:			this.phpserver,
+		localhost:			this.localhost
 	};
 
 	// and move the assets to that folder
@@ -205,11 +206,13 @@ creativekoen.prototype.moveFiles = function moveFiles(){ // {{{
 
 	if (this.includeCoffee) {
 		this.template('source/coffee/main.coffee', root+'/source/coffee/main.coffee');
-		this.template('source/coffee/plugins.coffee', root+'/source/coffee/plugin.coffee');
+		this.template('source/coffee/plugins.coffee', root+'/source/coffee/plugins.coffee');
 	}
 	// source JS
+	if (!this.includeCoffee) {
 	this.template('source/js/main.js', root+'/source/js/main.js');
 	this.template('source/js/plugins.js', root+'/source/js/plugins.js');
+	}
 
 	// boy boilerplate html5 https://github.com/corysimmons/boy
 	this.template('source/js/vendor/calc.min.js', root+'/source/js/vendor/calc.min.js');
