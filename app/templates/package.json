@@ -27,22 +27,25 @@
     "gulp-memory-cache": "*",
     "gulp-minify-css": "*",
     "gulp-plumber": "*",
-    "gulp-postcss": "^5.1.8",
+    "gulp-postcss": "*",
     "gulp-rename": "*",
 	<% if (includeSass) {%>
-    "gulp-sass": "^2.0.1",
-		<% if (includeSassStack) {%>
-		"lost": "*",
-		<% } %>
+    "gulp-sass": "*",
+	<% } %>
+	<% if (includeSassStack) {%>
+	"lost": "*",
 	<% } %>
 	<% if (includeStylus) {%>
     "gulp-stylus": "*",
-		<% if (includeStylusStack) {%>
-		"nib": "*",
-		"rupture": "*",
-		"lost": "*",
-		<% } %>
 	<% } %>
+	<% if (includeStylusStack) {%>
+	"nib": "*",
+	"rupture": "*",
+	"jeet": "*",
+	<% } %>
+	<% if (includeCoffee) { %>
+    "gulp-coffee": "*",
+	<% }%>
     "gulp-uglify": "*",
     "gulp-util": "*",
     "jshint-stylish": "*",
