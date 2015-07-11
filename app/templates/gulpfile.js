@@ -44,23 +44,20 @@ var DISTPATH = 'dist/';
 // Stylus
 // -------------------------------------------------------
 function stylus() {
-	<% if (includeStylusStack) { %>
+	<% if (includeStylusStack = true) { %>
 	var nib = require('nib');
 	var rupture = require('rupture');
-	var lost = require('lost');
+	var jeet = require('jeet');
 	<% } %>
 	gulp.src(SOURCEPATH+'stylus/*.styl')
 		.pipe($.memoryCache('stylusCached'))
 		.pipe($.stylus({
 			compress: false,
 			errLogToConsole: true
-		<% if (includeStylusStack) { %>
-			,use: [ nib(), rupture()]
+		<% if (includeStylusStack = true) { %>
+			,use: [ nib(), rupture(), jeet()]
 		<% } %>
 		}))
-		<% if (includeStylusStack) { %>
-		.pipe($.postcss([lost()]))
-		<% } %>
 		.pipe($.autoprefixer({
             browser: [
               'last 2 version',
@@ -116,21 +113,42 @@ function scss() {
 
 
 
+<% if (!includeCoffee) { %>
 // -------------------------------------------------------
 // Scripts
 // -------------------------------------------------------
 function scripts() {
 	gulp.src(SOURCEPATH+'js/*.js')
-			.pipe($.memoryCache('jsCached'))
-			.pipe($.jshint())
-			.pipe($.jshint.reporter($.jshintStylish))
-			.pipe($.plumber())
-			.pipe($.uglify())
-			//.pipe($.if(args.dist, $.concat('main.js')))
-			.pipe($.if(args.dist, $.rename({ suffix: '.min' })))
-			.pipe($.if(args.build, gulp.dest(BUILDPATH+'js')))
-			.pipe($.if(args.dist, gulp.dest(DISTPATH+'js') ));
+		.pipe($.memoryCache('jsCached'))
+		.pipe($.jshint())
+		.pipe($.jshint.reporter($.jshintStylish))
+		.pipe($.plumber())
+		.pipe($.uglify())
+		//.pipe($.if(args.dist, $.concat('main.js')))
+		.pipe($.if(args.dist, $.rename({ suffix: '.min' })))
+		.pipe($.if(args.build, gulp.dest(BUILDPATH+'js')))
+		.pipe($.if(args.dist, gulp.dest(DISTPATH+'js') ));
 };
+<% } %>
+
+
+
+
+<% if (includeCoffee) { %>
+// -------------------------------------------------------
+// Scripts COFFEE
+// -------------------------------------------------------
+function scripts() {
+	gulp.src(SOURCEPATH+'coffee/*.coffee')
+		.pipe($.memoryCache('coffeeCached'))
+		.pipe($.coffee({bare: true}))
+		.pipe($.plumber())
+		.pipe($.uglify())
+		.pipe($.if(args.dist, $.rename({ suffix: '.min' })))
+		.pipe($.if(args.build, gulp.dest(BUILDPATH+'js')))
+		.pipe($.if(args.dist, gulp.dest(DISTPATH+'js') ));
+};
+<% } %>
 
 
 
@@ -250,9 +268,9 @@ gulp.task('vendor', gulp.series('vendor:js','vendor:css'));
 
 
 
-<% if (includePhp) { %>
+<% if (!localhost) { %>
 // -------------------------------------------------------
-// Watch
+// PHP server
 // -------------------------------------------------------
 function phpserver(){
 	$.connectPhp.server({
@@ -261,11 +279,11 @@ function phpserver(){
 		keepalive:true
 	});
 }
-
-
-
-
+gulp.task(phpserver);
 <% } %>
+
+
+
 
 // -------------------------------------------------------
 // Watch
@@ -278,16 +296,19 @@ function watch() {
 		console.log('build server is running\n');
 		console.log('-----------------------\n');
 		browserSync({
-		//proxy: 'local.example.nl',
+		<% if (!localhost) { %>
+			proxy: '127.0.0.1:8000',
+		<% } else { %>
 			server: {
 				baseDir: BUILDPATH
 			},
 			index: 'index.html',
+		<% } %>
 			port: 3000,
 			notify: false,
 			open: true,
 			ui: false,
-			browser: ['firefox']
+			browser: ['Google Chrome']
 
 			/*
 			this is to see the http requests
@@ -305,11 +326,16 @@ function watch() {
 		console.log('dist server is running \n');
 		console.log('-----------------------\n');
 		browserSync({
-			//proxy: 'local.gelskemout.nl',
+		<% if (!localhost) { %>
+			proxy: '127.0.0.1:8000',
+		<% } else { %>
+
 			server: {
-				baseDir: DISTPATH
+				baseDir: BUILDPATH
 			},
 			index: 'index.html',
+
+		<% } %>
 			port: 6000,
 			notify: false,
 			open: true,
@@ -330,12 +356,13 @@ function watch() {
 
 
     var watchFiles = [
-        'source/scss/**/*.scss'
-        ,'source/stylus/**/*.styl'
-        ,'source/js/**.js'
-        ,'source/*.jade',
-        ,'source/*.php',
-        'source/*.html'
+        'source/scss/**/*.scss',
+        'source/stylus/**/*.styl',
+        'source/js/**.js',
+        'source/*.jade',
+        'source/*.php',
+        'source/*.html',
+        'source/coffee/*.coffee'
     ];
 
 
@@ -435,6 +462,7 @@ function watch() {
             });
 <% } %>
 
+<% if (!includeCoffee) {%>
     gulp.watch( watchFiles[2],
         gulp.parallel(scripts, reload ))
             .on('change', function(event){
@@ -448,6 +476,23 @@ function watch() {
                     console.log('cache updated');
                 }
             });
+<% } %>
+
+<% if (includeCoffee) {%>
+    gulp.watch( watchFiles[6],
+        gulp.parallel(scripts, reload ))
+            .on('change', function(event){
+                console.log('cache check');
+                if (event.type === 'deleted'){
+                    $.memoryCache.forget('coffeeCached', event.path);
+                    console.log('a file was deleted');
+                }
+                else{
+                    $.memoryCache.update('scriptsCached');
+                    console.log('cache updated');
+                }
+            });
+<% } %>
 };
 
 
