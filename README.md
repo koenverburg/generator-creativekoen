@@ -40,6 +40,16 @@ Finally, initiate the generator:
 yo creativekoen
 ```
 
+### flags
+
+`--git` will init and commit the fresh scaffold and will checkout to a develop branch
+
+`--skip-welcome-message` no explaination nessery
+
+'--skip-install' explains ifself, it will skip the install of bower and npm
+
+`--run-gulp` let Yeoman start the gulp script
+
 ### Getting To Know Yeoman
 
 Yeoman has a heart of gold. He's a person with feelings and opinions, but he's very easy to work with. If you think he's too opinionated, he can be easily convinced.
