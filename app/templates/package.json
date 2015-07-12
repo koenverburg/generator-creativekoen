@@ -13,7 +13,9 @@
     "gulp": "git://github.com/gulpjs/gulp.git#4.0",
     "gulp-autoprefixer": "*",
     "gulp-concat": "*",
+	<% if (phpserver) { %>
 	"gulp-connect-php": "*",
+	<% } %>
     "gulp-exec": "*",
     "gulp-if": "*",
 	<% if (includeHtmlJade) { %>

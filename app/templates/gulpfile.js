@@ -244,7 +244,7 @@ gulp.task('cleanCache', function () {
 
 
 // -------------------------------------------------------
-// Vendor
+// Vendor {{{
 // -------------------------------------------------------
 gulp.task('vendor:js', function(){
 	gulp.src([
@@ -263,23 +263,23 @@ gulp.task('vendor:css', function(){
 });
 
 gulp.task('vendor', gulp.series('vendor:js','vendor:css'));
+// }}}
 
 
 
 
-
-<% if (!localhost) { %>
+<% if (!localhost && phpserver) { %>
 // -------------------------------------------------------
 // PHP server
 // -------------------------------------------------------
-function phpserver(){
+function phpserve(){
 	$.connectPhp.server({
 		base: BUILDPATH,
 		port: 8000,
 		keepalive:true
 	});
 }
-gulp.task(phpserver);
+gulp.task(phpserve);
 <% } %>
 
 
@@ -296,14 +296,23 @@ function watch() {
 		console.log('build server is running\n');
 		console.log('-----------------------\n');
 		browserSync({
-		<% if (!localhost) { %>
+
+
+		<% if (localhost && !phpserver){ %>
+			proxy: 'local.<%= projectname %>',
+
+		<% } %>
+		<% if (phpserver = true && !localhost){ %>
 			proxy: '127.0.0.1:8000',
-		<% } else { %>
+		<% } %>
+
+		<% if (!phpserver && !localhost){ %>
 			server: {
 				baseDir: BUILDPATH
 			},
 			index: 'index.html',
 		<% } %>
+
 			port: 3000,
 			notify: false,
 			open: true,
@@ -493,6 +502,7 @@ function watch() {
                 }
             });
 <% } %>
+
 };
 
 

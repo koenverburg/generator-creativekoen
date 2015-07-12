@@ -184,39 +184,38 @@ creativekoen.prototype.moveFiles = function moveFiles(){ // {{{
 		projectname:		this.appname,
 		includeHtmlJade:	this.includeHtmlJade,
 		includeHtml:		this.includeHtml,
+		includePhp:			this.includePhp,
 		includePhpJade:		this.includePhpJade,
 		includeSass:		this.includeSass,
 		includeStylus:		this.includeStylus,
 		includeSassStack:	this.includeSassStack,
 		includeStylusStack: this.includeStylusStack,
 		includeCoffee:		this.includeCoffee,
-		includePhp:			this.phpserver,
+		phpserver:			this.phpserver,
 		localhost:			this.localhost
 	};
 
-	// and move the assets to that folder
-
 	// moving root files
-	this.template('gulpfile.js', root+'/Gulpfile.js', projectname);
-	this.template('package.json', root+'/package.json', projectname);
-	this.template('bower.json', root+'/bower.json', projectname);
-	this.template('README.md', root+'/README.md');
-	this.template('.editorconfig', root+'/.editorconfig');
-	this.template('.gitignore', root+'/.gitignore');
+	this.template('gulpfile.js',	root+'/Gulpfile.js', projectname);
+	this.template('package.json',	root+'/package.json', projectname);
+	this.template('bower.json',		root+'/bower.json', projectname);
+	this.template('README.md',		root+'/README.md');
+	this.template('.editorconfig',	root+'/.editorconfig');
+	this.template('.gitignore',		root+'/.gitignore');
 
 	if (this.includeCoffee) {
-		this.template('source/coffee/main.coffee', root+'/source/coffee/main.coffee');
-		this.template('source/coffee/plugins.coffee', root+'/source/coffee/plugins.coffee');
+		this.template('source/coffee/main.coffee',		root+'/source/coffee/main.coffee');
+		this.template('source/coffee/plugins.coffee',	root+'/source/coffee/plugins.coffee');
 	}
 	// source JS
 	if (!this.includeCoffee) {
-	this.template('source/js/main.js', root+'/source/js/main.js');
-	this.template('source/js/plugins.js', root+'/source/js/plugins.js');
+	this.template('source/js/main.js',		root+'/source/js/main.js');
+	this.template('source/js/plugins.js',	root+'/source/js/plugins.js');
 	}
 
 	// boy boilerplate html5 https://github.com/corysimmons/boy
-	this.template('source/js/vendor/calc.min.js', root+'/source/js/vendor/calc.min.js');
-	this.template('source/js/vendor/respond-1.4.2.min.js', root+'/source/js/vendor/respond-1.4.2.min.js');
+	this.template('source/js/vendor/calc.min.js',				root+'/source/js/vendor/calc.min.js');
+	this.template('source/js/vendor/respond-1.4.2.min.js',		root+'/source/js/vendor/respond-1.4.2.min.js');
 	this.template('source/js/vendor/selectivizr-1.0.3b.min.js', root+'/source/js/vendor/selectivizr-1.0.3b.min.js');
 
 
