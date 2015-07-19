@@ -1,36 +1,49 @@
 'use strict';
-var util = require('util');
-var path = require('path');
-var yeoman = require('yeoman-generator');
-var chalk = require('chalk');
-var yosay = require('yosay');
-var git = require('simple-git');
+var util	= require('util');
+var path	= require('path');
+var yeoman	= require('yeoman-generator');
+var chalk	= require('chalk');
+var yosay	= require('yosay');
+var git		= require('simple-git');
 
-
+// let's create and export our generator first this will save time later down the road
 var creativekoen = module.exports = function creativekoen(args, options){ // {{{
     yeoman.generators.Base.apply(this, arguments);
     this.welcome;
 };
+
+// With this line we can create prototype functions
+// and we dont have to var "generator name" = module.export = function "generator name"()
+// everytime
 util.inherits(creativekoen, yeoman.generators.Base);
 // }}}
+
+// let greet our users with a nice message
 creativekoen.prototype.welcome = function welcome(){ //{{{
+	// you can skip the welcome message with --skip-welcome-message
     if (!this.options['skip-welcome-message']){
         this.log(yosay('Welcome to CreativeKoen\'s workflow generator!'));
     };
 };
 // }}}
+
+// lets ask the user what the client/project name is
 creativekoen.prototype.askForClient = function askForClient() { //{{{
     var done = this.async();
     this.prompt([{
-            name: 'appName',
-            message: 'what is the name of your client name ?',
-            default: 'best-project-ever'
+		name: 'appName',
+		message: 'what is the name of your client name ?',
+		default: 'best-project-ever'
     }], function(answers){
+
         this.appname = answers.appName;
+
         done();
     }.bind(this));
 };
 //}}}
+
+// lets ask the user what kind of server to use
 creativekoen.prototype.askForServer = function askForServer() { //{{{
     var done = this.async();
 
@@ -39,12 +52,16 @@ creativekoen.prototype.askForServer = function askForServer() { //{{{
         name: 'features',
         message: 'What kind of server do you want to use?',
         choices: [{
-                name: 'localhost',
+                name: 'localhost (local.< project name >)',
                 value: 'localhost',
                 checked: false
             },{
-                name: 'phpserver',
-                value: 'gulp-phpServer',
+                name: 'php server',
+                value: 'phpserver',
+                checked: false
+            },{
+                name: 'just static html',
+                value: 'static',
                 checked: true
             }
             ]
@@ -58,11 +75,18 @@ creativekoen.prototype.askForServer = function askForServer() { //{{{
 
         this.localhost	= hasFeature('localhost');
         this.phpserver	= hasFeature('phpserver');
+        this.statichtml	= hasFeature('static');
+
+		console.log(this.localhost)
+		console.log(this.phpserver)
+		console.log(this.statichtml)
 
         done();
     }.bind(this));
 };
 //}}}
+
+// lets also aks the user what kind of css preprocessor they want to use
 creativekoen.prototype.askForCss = function askForCss() { // {{{
     var done = this.async();
     var prompts = [{
@@ -122,6 +146,8 @@ creativekoen.prototype.askForCss = function askForCss() { // {{{
     }.bind(this));
 };
 // }}}
+
+// that also goes for html/php/jade
 creativekoen.prototype.askForHtml = function askForHtml() { //{{{
     var done = this.async();
 
@@ -164,18 +190,24 @@ creativekoen.prototype.askForHtml = function askForHtml() { //{{{
     }.bind(this));
 };
 // }}}
+
+// Do you enjoy your coffee? lets also ask for that
 creativekoen.prototype.askForCoffee = function askForCoffee() { //{{{
     var done = this.async();
     this.prompt([{
-			type: 'confirm',
-            name: 'includeCoffee',
-            message: 'Do you want to use Coffee Script?',
-            default: false
+		type: 'confirm',
+		name: 'includeCoffee',
+		message: 'Do you want to use Coffee Script?',
+		default: false
     }], function(answers){
+
         this.includeCoffee = answers.includeCoffee;
+
         done();
     }.bind(this));
 }; // }}}
+
+// moving the scaffold files to the new project dir
 creativekoen.prototype.moveFiles = function moveFiles(){ // {{{
 	// lets set the project name to the folder name
 	var root = this.appname;
@@ -192,7 +224,8 @@ creativekoen.prototype.moveFiles = function moveFiles(){ // {{{
 		includeStylusStack: this.includeStylusStack,
 		includeCoffee:		this.includeCoffee,
 		phpserver:			this.phpserver,
-		localhost:			this.localhost
+		localhost:			this.localhost,
+		statichtml:			this.statichtml
 	};
 
 	// moving root files
@@ -203,17 +236,19 @@ creativekoen.prototype.moveFiles = function moveFiles(){ // {{{
 	this.template('.editorconfig',	root+'/.editorconfig');
 	this.template('.gitignore',		root+'/.gitignore');
 
+	// source coffee
 	if (this.includeCoffee) {
 		this.template('source/coffee/main.coffee',		root+'/source/coffee/main.coffee');
 		this.template('source/coffee/plugins.coffee',	root+'/source/coffee/plugins.coffee');
 	}
+
 	// source JS
 	if (!this.includeCoffee) {
 	this.template('source/js/main.js',		root+'/source/js/main.js');
 	this.template('source/js/plugins.js',	root+'/source/js/plugins.js');
 	}
 
-	// boy boilerplate html5 https://github.com/corysimmons/boy
+	// boy boilerplate html5 from https://github.com/corysimmons/boy
 	this.template('source/js/vendor/calc.min.js',				root+'/source/js/vendor/calc.min.js');
 	this.template('source/js/vendor/respond-1.4.2.min.js',		root+'/source/js/vendor/respond-1.4.2.min.js');
 	this.template('source/js/vendor/selectivizr-1.0.3b.min.js', root+'/source/js/vendor/selectivizr-1.0.3b.min.js');
@@ -221,24 +256,24 @@ creativekoen.prototype.moveFiles = function moveFiles(){ // {{{
 
 	// source SCSS
 	if (this.includeSass === true){ // {{{
-		this.template('source/scss/main.scss', root+'/source/scss/main.scss');
-		this.template('source/scss/vars/_base.scss', root+'/source/scss/vars/_base.scss');
-		this.template('source/scss/vars/_layout.scss', root+'/source/scss/vars/_layout.scss');
-		this.template('source/scss/vars/_module.scss', root+'/source/scss/vars/_module.scss');
-		this.template('source/scss/vars/_state.scss', root+'/source/scss/vars/_state.scss');
-		this.template('source/scss/vars/_theme.scss', root+'/source/scss/vars/_theme.scss');
-		this.template('source/scss/vars/_vars.scss', root+'/source/scss/vars/_vars.scss');
+		this.template('source/scss/main.scss',			root+'/source/scss/main.scss');
+		this.template('source/scss/vars/_base.scss',	root+'/source/scss/vars/_base.scss');
+		this.template('source/scss/vars/_layout.scss',	root+'/source/scss/vars/_layout.scss');
+		this.template('source/scss/vars/_module.scss',	root+'/source/scss/vars/_module.scss');
+		this.template('source/scss/vars/_state.scss',	root+'/source/scss/vars/_state.scss');
+		this.template('source/scss/vars/_theme.scss',	root+'/source/scss/vars/_theme.scss');
+		this.template('source/scss/vars/_vars.scss',	root+'/source/scss/vars/_vars.scss');
 	}
     // }}}
 
 	if (this.includeStylus === true){ //{{{
-		this.template('source/stylus/main.styl', root+'/source/stylus/main.styl');
-		this.template('source/stylus/vars/_base.styl', root+'/source/stylus/vars/_base.styl');
-		this.template('source/stylus/vars/_layout.styl', root+'/source/stylus/vars/_layout.styl');
-		this.template('source/stylus/vars/_module.styl', root+'/source/stylus/vars/_module.styl');
-		this.template('source/stylus/vars/_state.styl', root+'/source/stylus/vars/_state.styl');
-		this.template('source/stylus/vars/_theme.styl', root+'/source/stylus/vars/_theme.styl');
-		this.template('source/stylus/vars/_vars.styl', root+'/source/stylus/vars/_vars.styl');
+		this.template('source/stylus/main.styl',			root+'/source/stylus/main.styl');
+		this.template('source/stylus/vars/_base.styl',		root+'/source/stylus/vars/_base.styl');
+		this.template('source/stylus/vars/_layout.styl',	root+'/source/stylus/vars/_layout.styl');
+		this.template('source/stylus/vars/_module.styl',	root+'/source/stylus/vars/_module.styl');
+		this.template('source/stylus/vars/_state.styl',		root+'/source/stylus/vars/_state.styl');
+		this.template('source/stylus/vars/_theme.styl',		root+'/source/stylus/vars/_theme.styl');
+		this.template('source/stylus/vars/_vars.styl',		root+'/source/stylus/vars/_vars.styl');
 	}
     //}}}
 
@@ -256,28 +291,35 @@ creativekoen.prototype.moveFiles = function moveFiles(){ // {{{
 	}
 
 };// }}}
-creativekoen.prototype.installDeps = function installDeps() { // {{{
 
+// let Yeoman install the dependencies
+creativekoen.prototype.installDeps = function installDeps() { // {{{
+	// this function will only by called when the rest of the function are done
 	this.on('end', function(){
 
 		var done = this.async();
 
+		// change the current working directory to the new one
 		var npmdir = path.join(process.cwd(), this.appname+"\\");
-
 		process.chdir(npmdir);
 
 		this.installDependencies({
 			skipInstall: this.options['skip-install'],
 			callback: function() {
+				// --skip-install will skip the install of bower and npm
 				if (!this.options['skip-install']) {
 					this.spawnCommand('gulp', ['build','--build']);
 					this.spawnCommand('gulp', ['vendor','--build']);
 				}
 
+				// if you pass a cli argument like --run-gulp than yeoman will start gulp
+				// but not when you have selected for the php server option
 				if (this.options['run-gulp'] && !this.phpserver && this.localhost) {
 					this.spawnCommand('gulp', ['serve','--build']);
 				}
-				if (this.phpserver = true && !this.localhost) { //{{{
+
+				// print intructions for the php server
+				if (this.phpserver === true) { //{{{
 					this.log(
 						'run '+
 						chalk.yellow('gulp phpserver')+
@@ -288,6 +330,7 @@ creativekoen.prototype.installDeps = function installDeps() { // {{{
 
 				} //}}}
 
+				// init a git repo with yeoman when you add a --git argument
 				if (this.options['git']){ //{{{
 					git(npmdir)
 						.init()
@@ -296,6 +339,7 @@ creativekoen.prototype.installDeps = function installDeps() { // {{{
 						// .checkoutLocalBranch('feature')
 						.checkoutLocalBranch('develop');
 				} // }}}
+
 			}.bind(this)
 		})
 
