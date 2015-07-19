@@ -298,20 +298,20 @@ function watch() {
 		browserSync({
 
 
-		<% if (localhost && !phpserver){ %>
+		<% if (localhost === true){ %>
 			proxy: 'local.<%= projectname %>',
+		<% }else{} %>
 
-		<% } %>
-		<% if (phpserver = true && !localhost){ %>
+		<% if (phpserver === true){ %>
 			proxy: '127.0.0.1:8000',
-		<% } %>
+		<% }else{} %>
 
-		<% if (!phpserver && !localhost){ %>
+		<% if (statichtml === true){ %>
 			server: {
 				baseDir: BUILDPATH
 			},
 			index: 'index.html',
-		<% } %>
+		<% }else{} %>
 
 			port: 3000,
 			notify: false,
