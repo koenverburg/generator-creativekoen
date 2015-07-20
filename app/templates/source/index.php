@@ -23,7 +23,7 @@
       </div>
     <![endif]-->
 
-	<center class="m-yeoman theme-yeoman">
+	<section class="m-yeoman theme-yeoman">
 		<h1>Creativekoen Thanks You!</h1>
 		Thank you for using my Yeoman Generator.<br>
 		I always like to meet new creative people and so if you want hit me on
@@ -31,7 +31,7 @@
 			<li><a href="http://twitter.com/Creativekoen">Twitter</a></li>
 			<li><a href="http://github.com/Creativekoen">Github</a></li>
 		</ul>
-	</center>
+	</section>
 
     <!--[if lt IE 9]>
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
