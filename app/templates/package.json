@@ -29,13 +29,10 @@
     "gulp-memory-cache": "*",
     "gulp-minify-css": "*",
     "gulp-plumber": "*",
-    "gulp-postcss": "*",
     "gulp-rename": "*",
 	<% if (includeSass) {%>
     "gulp-sass": "*",
-	<% } %>
-	<% if (includeSassStack) {%>
-	"lost": "*",
+	"jeet": "*",
 	<% } %>
 	<% if (includeStylus) {%>
     "gulp-stylus": "*",

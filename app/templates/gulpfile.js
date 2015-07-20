@@ -78,20 +78,12 @@ function stylus() {
 // Sass
 // -------------------------------------------------------
 function scss() {
-// var breakpoint-sass = require('breakpoint-sass');
-// there is a failing build of breakpoint-sass so import it using bower
-
-// task failing
-	var lost = require('lost');
 	gulp.src(SOURCEPATH+'scss/*.scss')
 		.pipe($.memoryCache('scssCached'))
 		.pipe($.sass({
 			compress: false,
 			errLogToConsole: false
 		}))
-		<% if (includeSassStack) { %>
-		.pipe($.postcss([lost()]))
-		<% } %>
 		.on('error', function(err){ displayError(err);})
 		.pipe($.autoprefixer({
             browser: [
@@ -208,21 +200,24 @@ function php() {
 
 
 // -------------------------------------------------------
-// Editor
+// Editor {{{
 // -------------------------------------------------------
 function editor() {
 	var options = {err: true,stderr: true,stdout: true};
 	gulp.src('/', {read:false})
+	// if you use sublime text or atom
+	// use subl . or atom .
+	// where it says gvim
 		.pipe($.exec('gvim'))
 		.pipe($.exec.reporter(options));
-};
+}; // }}}
 
 
 
 
 
 // -------------------------------------------------------
-// Clean tasks
+// Clean tasks {{{
 // -------------------------------------------------------
 gulp.task('clean:build', function (done) {
 	var del = require('del');
@@ -237,8 +232,7 @@ gulp.task('clean:dist', function (done) {
 gulp.task('cleanCache', function () {
     $.memoryCache.caches = {};
     console.log("Deleted cache files!"+'\n');
-});
-
+});// }}}
 
 
 
@@ -263,6 +257,18 @@ gulp.task('vendor:css', function(){
 });
 
 gulp.task('vendor', gulp.series('vendor:js','vendor:css'));
+
+gulp.task('breakpoint:bp',function(){
+	gulp.src('bower_components/breakpoint-sass/stylesheets/**/**')
+		.pipe(gulp.dest('source/scss/'))
+});
+
+gulp.task('breakpoint:jeet',function(){
+	gulp.src('node_modules/jeet/scss/jeet/**')
+		.pipe(gulp.dest('source/scss/jeet/'))
+});
+
+gulp.task('breakpoint', gulp.series('breakpoint:jeet','breakpoint:bp'));
 // }}}
 
 
@@ -335,16 +341,21 @@ function watch() {
 		console.log('dist server is running \n');
 		console.log('-----------------------\n');
 		browserSync({
-		<% if (!localhost) { %>
-			proxy: '127.0.0.1:8000',
-		<% } else { %>
 
+		<% if (localhost === true){ %>
+			proxy: 'local.<%= projectname %>',
+		<% }else{} %>
+
+		<% if (phpserver === true){ %>
+			proxy: '127.0.0.1:8000',
+		<% }else{} %>
+
+		<% if (statichtml === true){ %>
 			server: {
-				baseDir: BUILDPATH
+				baseDir: DISTPATH
 			},
 			index: 'index.html',
-
-		<% } %>
+		<% }else{} %>
 			port: 6000,
 			notify: false,
 			open: true,

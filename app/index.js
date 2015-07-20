@@ -77,10 +77,6 @@ creativekoen.prototype.askForServer = function askForServer() { //{{{
         this.phpserver	= hasFeature('phpserver');
         this.statichtml	= hasFeature('static');
 
-		console.log(this.localhost)
-		console.log(this.phpserver)
-		console.log(this.statichtml)
-
         done();
     }.bind(this));
 };
@@ -232,7 +228,7 @@ creativekoen.prototype.moveFiles = function moveFiles(){ // {{{
 	this.template('gulpfile.js',	root+'/Gulpfile.js', projectname);
 	this.template('package.json',	root+'/package.json', projectname);
 	this.template('bower.json',		root+'/bower.json', projectname);
-	this.template('README.md',		root+'/README.md');
+	this.template('README.md',		root+'/README.md', projectname);
 	this.template('.editorconfig',	root+'/.editorconfig');
 	this.template('.gitignore',		root+'/.gitignore');
 
@@ -310,6 +306,9 @@ creativekoen.prototype.installDeps = function installDeps() { // {{{
 				if (!this.options['skip-install']) {
 					this.spawnCommand('gulp', ['build','--build']);
 					this.spawnCommand('gulp', ['vendor','--build']);
+					if (this.includeSassStack) {
+						this.spawnCommand('gulp', ['breakpoint','--build']);
+					}
 				}
 
 				// if you pass a cli argument like --run-gulp than yeoman will start gulp

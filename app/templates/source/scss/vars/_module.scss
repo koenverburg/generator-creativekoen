@@ -1,0 +1,7 @@
+.m-yeoman{
+	@include center();
+	@include breakpoint(320px){
+		@include center(640px);
+		padding:1.20em;
+	};
+}
