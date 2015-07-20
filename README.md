@@ -50,6 +50,20 @@ yo creativekoen
 
 `--run-gulp` let Yeoman start the gulp script
 
+### gulp commands
+
+##### building
+`gulp build` will run the code DRY and wont make anything
+`gulp build --build` will make a build dir with non minified code
+`gulp build --dist` will make a dist dir with minified code
+
+##### serving
+`gulp serve` again wont do anything
+`gulp serve --build` will build, and spin up a local server with BrowserSync and open a browser, It will also open your editor.
+By default it will open 'gvim' because thats the best editor out there
+
+`gulp serve --dist` will do the same as with the build flag but now it will serve up minified code
+
 ### Getting To Know Yeoman
 
 Yeoman has a heart of gold. He's a person with feelings and opinions, but he's very easy to work with. If you think he's too opinionated, he can be easily convinced.
